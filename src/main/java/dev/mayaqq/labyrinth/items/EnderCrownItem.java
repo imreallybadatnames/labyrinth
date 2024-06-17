@@ -3,6 +3,7 @@ package dev.mayaqq.labyrinth.items;
 import dev.mayaqq.labyrinth.items.base.LabyrinthItem;
 import dev.mayaqq.labyrinth.registry.materials.CustomArmorMaterials;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;

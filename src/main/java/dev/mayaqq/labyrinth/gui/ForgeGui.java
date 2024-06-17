@@ -5,22 +5,22 @@ import dev.mayaqq.labyrinth.registry.LabyrinthRecipes;
 import dev.mayaqq.labyrinth.utils.recipe.IngredientStack;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SimpleGui;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
@@ -56,7 +56,7 @@ public class ForgeGui {
         );
         // creates an array of every recipe that is a forge recipe
         RecipeManager recipeManager = player.getServer().getRecipeManager();
-        Collection<Recipe<?>> recipes = recipeManager.values();
+        Collection<RecipeEntry<?>> recipes = recipeManager.values();
         ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>();
         for (int i = 0; i < recipes.size(); i++) {
             Recipe<?> recipe = recipes.toArray(new Recipe<?>[0])[i];
@@ -78,14 +78,10 @@ public class ForgeGui {
             DefaultedList<IngredientStack> ingredients = recipe.getIngredientStacks();
             GuiElementBuilder guiElement = new GuiElementBuilder();
             ItemStack stack = recipe.getOutput(DynamicRegistryManager.EMPTY).copy();
-            stack.onCraft(world, player, stack.getCount());
+            stack.onCraftByPlayer(world, player, stack.getCount());
             if (!stack.getEnchantments().isEmpty()) {
-                for (int y = 0; y < stack.getEnchantments().size(); y++) {
-                    NbtCompound enchantment = stack.getEnchantments().getCompound(y);
-                    Identifier id = new Identifier(enchantment.get("id").asString());
-                    String levelString = enchantment.get("lvl").asString();
-                    int level = Integer.parseInt(levelString.substring(0, levelString.length() - 1));
-                    guiElement.enchant(Registries.ENCHANTMENT.get(id), level);
+                for (RegistryEntry<Enchantment> enchantment : stack.getEnchantments().getEnchantments()) {
+                    guiElement.enchant(enchantment, stack.getEnchantments().getLevel(enchantment));
                 }
             }
             guiElement.setItem(stack.getItem());

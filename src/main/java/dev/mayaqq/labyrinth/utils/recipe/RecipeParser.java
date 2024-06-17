@@ -45,18 +45,9 @@ public class RecipeParser {
 
     public static IngredientStack ingredientStackFromJson(JsonObject json) {
         Ingredient ingredient = json.has("ingredient") ? Ingredient.fromJson(json.getAsJsonObject("ingredient")) : Ingredient.fromJson(json);
-        NbtCompound recipeViewNbt = null;
         int count = json.has("count") ? json.get("count").getAsInt() : 1;
 
-        if (json.has("recipeViewNbt")) {
-            try {
-                recipeViewNbt = NbtHelper.fromNbtProviderString(json.get("recipeViewNbt").getAsString());
-            } catch (CommandSyntaxException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return IngredientStack.of(ingredient, recipeViewNbt, count);
+        return IngredientStack.of(ingredient, count);
     }
 
     public static DefaultedList<IngredientStack> ingredientStacksFromJson(JsonArray array, int size) {

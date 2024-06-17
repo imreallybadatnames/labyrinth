@@ -22,45 +22,43 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"unused", "OptionalUsedAsFieldOrParameterType"})
+@SuppressWarnings({"unused"})
 public class IngredientStack {
 
-    public static final IngredientStack EMPTY = new IngredientStack(Ingredient.EMPTY, Optional.empty(), 0);
+    public static final IngredientStack EMPTY = new IngredientStack(Ingredient.EMPTY, 0);
     private final Ingredient ingredient;
-    private final Optional<NbtCompound> recipeViewNbt;
     private final int count;
 
-    private IngredientStack(@NotNull Ingredient ingredient, Optional<NbtCompound> recipeViewNbt, int count) {
+    private IngredientStack(@NotNull Ingredient ingredient, int count) {
         this.ingredient = ingredient;
-        this.recipeViewNbt = recipeViewNbt;
         this.count = count;
     }
 
-    public static IngredientStack of(@NotNull Ingredient ingredient, @Nullable NbtCompound recipeViewNbt, int count) {
+    public static IngredientStack of(@NotNull Ingredient ingredient, int count) {
         if(ingredient.isEmpty()) {
             return EMPTY;
         }
-        return new IngredientStack(ingredient, Optional.ofNullable(recipeViewNbt), count);
+        return new IngredientStack(ingredient, count);
     }
 
     public static IngredientStack of(Ingredient ingredient) {
-        return of(ingredient, null, 1);
+        return of(ingredient, 1);
     }
 
     public static IngredientStack ofItems(ItemConvertible... items) {
-        return of(Ingredient.ofItems(items), null, 1);
+        return of(Ingredient.ofItems(items), 1);
     }
 
     public static IngredientStack ofItems(int count, ItemConvertible... items) {
-        return of(Ingredient.ofItems(items), null, count);
+        return of(Ingredient.ofItems(items), count);
     }
 
     public static IngredientStack ofStacks(ItemStack... stacks) {
-        return of(Ingredient.ofStacks(stacks), null, 1);
+        return of(Ingredient.ofStacks(stacks), 1);
     }
 
     public static IngredientStack ofStacks(int count, ItemStack... stacks) {
-        return of(Ingredient.ofStacks(stacks), null, count);
+        return of(Ingredient.ofStacks(stacks), count);
     }
 
     public boolean test(ItemStack stack) {
@@ -77,13 +75,11 @@ public class IngredientStack {
 
     public void write(PacketByteBuf buf) {
         ingredient.write(buf);
-        buf.writeBoolean(recipeViewNbt.isPresent());
-        recipeViewNbt.ifPresent(buf::writeNbt);
         buf.writeInt(count);
     }
 
     public static IngredientStack fromByteBuf(PacketByteBuf buf) {
-        return new IngredientStack(Ingredient.fromPacket(buf), buf.readBoolean() ? Optional.ofNullable(buf.readNbt()) : Optional.empty(), buf.readInt());
+        return new IngredientStack(Ingredient.fromPacket(buf), buf.readInt());
     }
 
     public static DefaultedList<IngredientStack> decodeByteBuf(PacketByteBuf buf, int size) {
@@ -99,7 +95,6 @@ public class IngredientStack {
         return Arrays.stream(((MatchingStackAccessor) (Object) ingredient)
                         .getMatchingStacks())
                 .peek(stack -> stack.setCount(count))
-                .peek(stack -> recipeViewNbt.ifPresent(nbt -> stack.setNbt(nbt)))
                 .collect(Collectors.toList());
     }
 
