@@ -1,7 +1,7 @@
 package dev.mayaqq.labyrinth.mixin;
 
 import dev.mayaqq.labyrinth.gui.ForgeGui;
-import dev.mayaqq.labyrinth.registry.TagRegistry;
+import dev.mayaqq.labyrinth.registry.LabyrinthTags;
 import dev.mayaqq.nexusframe.api.multiblock.Multiblock;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
@@ -30,14 +30,14 @@ public class AnvilBlockMixin {
     private static char[][][] COMPLETED_FORGE;
     private static final HashMap<BlockPos, Multiblock> forgeMultiblocks = new HashMap<>();
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
-    private void labyrinth$onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+    private void labyrinth$onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         if (world.isClient) {
             cir.setReturnValue(ActionResult.SUCCESS);
         } else {
             getForgeMultiblock(pos);
             // get the block below the anvil
             BlockPos blockPos = pos.down();
-            if (world.getBlockState(blockPos).isIn(TagRegistry.FORGE_BASE)) {
+            if (world.getBlockState(blockPos).isIn(LabyrinthTags.FORGE_BASE)) {
                 Multiblock forge = forgeMultiblocks.get(pos);
                 if (player.isInPose(EntityPose.CROUCHING)) {
                     forge.rotate();
@@ -203,7 +203,7 @@ public class AnvilBlockMixin {
     private  static HashMap<Character, Predicate<BlockState>> getPredicates() {
         HashMap<Character, Predicate<BlockState>> predicates = new HashMap<>();
         predicates.put('a', BlockStatePredicate.ANY);
-        predicates.put('o', blockState -> blockState.isIn(TagRegistry.FORGE_BASE));
+        predicates.put('o', blockState -> blockState.isIn(LabyrinthTags.FORGE_BASE));
         predicates.put('$', BlockStatePredicate.forBlock(Blocks.ANVIL));
         predicates.put('b', BlockStatePredicate.forBlock(Blocks.BLACKSTONE));
         predicates.put('c', BlockStatePredicate.forBlock(Blocks.POLISHED_BLACKSTONE_BRICKS));
@@ -216,7 +216,7 @@ public class AnvilBlockMixin {
     }
     private static void getForgeMultiblock(BlockPos pos) {
         if (forgeMultiblocks.get(pos) == null) {
-            forgeMultiblocks.put(pos, new Multiblock(getForge(), getPredicates(), true, false));
+            forgeMultiblocks.put(pos, new Multiblock(getForge(), getPredicates(), true));
         }
     }
 }

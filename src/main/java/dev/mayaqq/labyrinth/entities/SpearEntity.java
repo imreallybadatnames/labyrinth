@@ -1,7 +1,7 @@
 package dev.mayaqq.labyrinth.entities;
 
-import dev.mayaqq.labyrinth.registry.EntityRegistry;
-import dev.mayaqq.labyrinth.registry.ItemRegistry;
+import dev.mayaqq.labyrinth.registry.LabyrinthEntities;
+import dev.mayaqq.labyrinth.registry.LabyrinthItems;
 import dev.mayaqq.labyrinth.registry.materials.CustomMaterials;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -37,14 +37,14 @@ public class SpearEntity extends PersistentProjectileEntity implements PolymerEn
     private final TrackedData<ItemStack> ITEM;
     private final int slot;
     private HashMap<ToolMaterial, Item> materialToItem = new HashMap<>() {{
-        put(CustomMaterials.IRON, ItemRegistry.IRON_SPEAR);
-        put(CustomMaterials.GOLD, ItemRegistry.GOLDEN_SPEAR);
-        put(CustomMaterials.DIAMOND, ItemRegistry.DIAMOND_SPEAR);
-        put(CustomMaterials.NETHERITE, ItemRegistry.NETHERITE_SPEAR);
+        put(CustomMaterials.IRON, LabyrinthItems.IRON_SPEAR);
+        put(CustomMaterials.GOLD, LabyrinthItems.GOLDEN_SPEAR);
+        put(CustomMaterials.DIAMOND, LabyrinthItems.DIAMOND_SPEAR);
+        put(CustomMaterials.NETHERITE, LabyrinthItems.NETHERITE_SPEAR);
     }};
 
     public SpearEntity(World world, LivingEntity owner, ItemStack stack, ToolMaterial material, int slot) {
-        super(EntityRegistry.SPEAR, owner, world);
+        super(LabyrinthEntities.SPEAR, owner, world);
         this.spearStack = new ItemStack(materialToItem.get(material));
         this.spearStack = stack.copy();
         this.dataTracker.set(ENCHANTED, stack.hasGlint());

@@ -1,7 +1,7 @@
 package dev.mayaqq.labyrinth.recipes;
 
-import dev.mayaqq.labyrinth.registry.ItemRegistry;
-import dev.mayaqq.labyrinth.registry.RecipeRegistry;
+import dev.mayaqq.labyrinth.registry.LabyrinthItems;
+import dev.mayaqq.labyrinth.registry.LabyrinthRecipes;
 import dev.mayaqq.labyrinth.utils.recipe.IngredientStack;
 import eu.pb4.polymer.core.api.item.PolymerRecipe;
 import net.minecraft.block.Block;
@@ -83,7 +83,7 @@ public class ForgeRecipe implements Recipe<Inventory>, PolymerRecipe {
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(ItemRegistry.TEST_SWORD);
+        return new ItemStack(LabyrinthItems.TEST_SWORD);
     }
 
 
@@ -94,6 +94,6 @@ public class ForgeRecipe implements Recipe<Inventory>, PolymerRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return RecipeRegistry.FORGING;
+        return LabyrinthRecipes.FORGING;
     }
 }

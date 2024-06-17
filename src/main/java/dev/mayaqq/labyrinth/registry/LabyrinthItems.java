@@ -5,9 +5,7 @@ import dev.mayaqq.labyrinth.items.base.*;
 import dev.mayaqq.labyrinth.registry.materials.CustomMaterials;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -19,7 +17,7 @@ import net.minecraft.util.Rarity;
 import static dev.mayaqq.labyrinth.Labyrinth.id;
 
 
-public class ItemRegistry {
+public class LabyrinthItems {
 
     private static final RegistryKey<ItemGroup> LABYRINTH_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, id("labyrinth"));
 
@@ -34,19 +32,19 @@ public class ItemRegistry {
 
     // ender crown
     public static final EnderCrownItem ENDER_CROWN = Registry.register(Registries.ITEM, id("ender_crown"),
-            new EnderCrownItem(Items.DRAGON_EGG, new FabricItemSettings().maxCount(1).rarity(Rarity.EPIC), "ender_crown"));
+            new EnderCrownItem(Items.DRAGON_EGG, new Item.Settings().maxCount(1).rarity(Rarity.EPIC), "ender_crown"));
 
     // utility items
     public static final MagicMirrorItem MAGIC_MIRROR = Registry.register(Registries.ITEM, id("magic_mirror"),
-            new MagicMirrorItem(Items.ENDER_EYE, new FabricItemSettings().maxCount(1).rarity(Rarity.RARE), "magic_mirror"));
+            new MagicMirrorItem(Items.ENDER_EYE, new Item.Settings().maxCount(1).rarity(Rarity.RARE), "magic_mirror"));
     public static final SquidFlierItem SQUID_FLIER = Registry.register(Registries.ITEM, id("squid_flier"),
-            new SquidFlierItem(Items.ALLIUM, new FabricItemSettings().maxCount(1).rarity(Rarity.RARE), "squid_flier"));
+            new SquidFlierItem(Items.ALLIUM, new Item.Settings().maxCount(1).rarity(Rarity.RARE), "squid_flier"));
 
     // donation items
     public static final WitherScytheItem WITHER_SCYTHE = Registry.register(Registries.ITEM, id("wither_scythe"),
             new WitherScytheItem(CustomMaterials.NETHERITE, 7, -2.0F, Items.NETHERITE_HOE, new Item.Settings().maxDamage(5000), "wither_scythe"));
     public static final WizardWandItem WIZARD_WAND = Registry.register(Registries.ITEM, id("wizard_wand"),
-            new WizardWandItem(Items.BLAZE_ROD, new FabricItemSettings().maxCount(1).fireproof().rarity(Rarity.EPIC), "wizard_wand"));
+            new WizardWandItem(Items.BLAZE_ROD, new Item.Settings().maxCount(1).fireproof().rarity(Rarity.EPIC), "wizard_wand"));
 
     // warhammers
     private static final float warhammerAttackSpeed = -3.3F;

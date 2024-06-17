@@ -1,6 +1,6 @@
 package dev.mayaqq.labyrinth.registry;
 
-public class DamageTypeRegistry {
+public class LabyrinthDamageTypes {
 
     public static void register() {
 

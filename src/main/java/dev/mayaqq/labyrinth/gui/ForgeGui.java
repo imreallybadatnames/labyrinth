@@ -1,7 +1,7 @@
 package dev.mayaqq.labyrinth.gui;
 
 import dev.mayaqq.labyrinth.recipes.ForgeRecipe;
-import dev.mayaqq.labyrinth.registry.RecipeRegistry;
+import dev.mayaqq.labyrinth.registry.LabyrinthRecipes;
 import dev.mayaqq.labyrinth.utils.recipe.IngredientStack;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SimpleGui;
@@ -26,8 +26,6 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import static dev.mayaqq.labyrinth.Labyrinth.LOGGER;
 
 public class ForgeGui {
     public static void gui(ServerPlayerEntity player, BlockPos pos) {
@@ -62,7 +60,7 @@ public class ForgeGui {
         ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>();
         for (int i = 0; i < recipes.size(); i++) {
             Recipe<?> recipe = recipes.toArray(new Recipe<?>[0])[i];
-            if (recipe.getType() == RecipeRegistry.FORGING && ((ForgeRecipe) recipe).getMaterial() == player.getWorld().getBlockState(pos.down()).getBlock()) {
+            if (recipe.getType() == LabyrinthRecipes.FORGING && ((ForgeRecipe) recipe).getMaterial() == player.getWorld().getBlockState(pos.down()).getBlock()) {
                 forgeRecipes.add((ForgeRecipe) recipe);
             }
         }

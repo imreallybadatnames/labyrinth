@@ -8,19 +8,20 @@ import org.slf4j.LoggerFactory;
 
 public class Labyrinth implements ModInitializer {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("Labyrinth");
+    public static final String MODID = "labyrinth";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 
     public static Identifier id(String path) {
-        return new Identifier("labyrinth", path);
+        return Identifier.of(MODID, path);
     }
 
     @Override
     public void onInitialize() {
         LOGGER.info("Labyrinth is initializing...");
-        ItemRegistry.register();
-        TagRegistry.register();
-        RecipeRegistry.register();
-        EventRegistry.register();
-        EntityRegistry.register();
+        LabyrinthItems.register();
+        LabyrinthTags.register();
+        LabyrinthRecipes.register();
+        LabyrinthEvents.register();
+        LabyrinthEntities.register();
     }
 }

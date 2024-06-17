@@ -1,19 +1,14 @@
 package dev.mayaqq.labyrinth.entities;
 
-import dev.mayaqq.labyrinth.registry.EntityRegistry;
-import dev.mayaqq.labyrinth.registry.ItemRegistry;
+import dev.mayaqq.labyrinth.registry.LabyrinthEntities;
+import dev.mayaqq.labyrinth.registry.LabyrinthItems;
 import dev.mayaqq.labyrinth.registry.materials.CustomMaterials;
-import eu.pb4.polymer.core.api.entity.PolymerEntity;
 import eu.pb4.polymer.virtualentity.api.elements.DisplayElement;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
-import eu.pb4.polymer.virtualentity.api.tracker.EntityTrackedData;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -27,7 +22,7 @@ public class TomahawkEntity extends BaseProjectileEntity {
     }
 
     public static TomahawkEntity create(World world, LivingEntity owner, ItemStack stack, ToolMaterial material, int slot, BlockPos pos) {
-        var entity = new TomahawkEntity(EntityRegistry.TOMAHAWK, world, stack, material, slot);
+        var entity = new TomahawkEntity(LabyrinthEntities.TOMAHAWK, world, stack, material, slot);
         var vec = Vec3d.ofCenter(pos);
         entity.setPosition(vec.x, vec.y, vec.z);
         return entity;
@@ -37,10 +32,10 @@ public class TomahawkEntity extends BaseProjectileEntity {
     @Override
     protected Item materialToItem(ToolMaterial material) {
         HashMap<ToolMaterial, Item> materialToItem = new HashMap<>() {{
-            put(CustomMaterials.IRON, ItemRegistry.IRON_TOMAHAWK);
-            put(CustomMaterials.GOLD, ItemRegistry.GOLDEN_TOMAHAWK);
-            put(CustomMaterials.DIAMOND, ItemRegistry.DIAMOND_TOMAHAWK);
-            put(CustomMaterials.NETHERITE, ItemRegistry.NETHERITE_TOMAHAWK);
+            put(CustomMaterials.IRON, LabyrinthItems.IRON_TOMAHAWK);
+            put(CustomMaterials.GOLD, LabyrinthItems.GOLDEN_TOMAHAWK);
+            put(CustomMaterials.DIAMOND, LabyrinthItems.DIAMOND_TOMAHAWK);
+            put(CustomMaterials.NETHERITE, LabyrinthItems.NETHERITE_TOMAHAWK);
         }};
         return materialToItem.get(material);
     }

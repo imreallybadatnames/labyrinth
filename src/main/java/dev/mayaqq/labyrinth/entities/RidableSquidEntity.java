@@ -1,11 +1,10 @@
 package dev.mayaqq.labyrinth.entities;
 
-import dev.mayaqq.labyrinth.registry.EntityRegistry;
+import dev.mayaqq.labyrinth.registry.LabyrinthEntities;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,7 +13,7 @@ import net.minecraft.world.World;
 
 public class RidableSquidEntity extends ProjectileEntity implements PolymerEntity {
     public RidableSquidEntity(World world, double x, double y, double z, LivingEntity owner) {
-        super(EntityRegistry.RIDABLE_SQUID, world);
+        super(LabyrinthEntities.RIDABLE_SQUID, world);
         this.refreshPositionAndAngles(x, y, z, this.getYaw(), this.getPitch());
         this.refreshPosition();
         this.setOwner(owner);

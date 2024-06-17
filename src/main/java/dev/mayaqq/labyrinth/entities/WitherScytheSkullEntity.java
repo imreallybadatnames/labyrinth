@@ -1,7 +1,6 @@
 package dev.mayaqq.labyrinth.entities;
 
-import dev.mayaqq.labyrinth.Labyrinth;
-import dev.mayaqq.labyrinth.registry.EntityRegistry;
+import dev.mayaqq.labyrinth.registry.LabyrinthEntities;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -34,7 +33,7 @@ public class WitherScytheSkullEntity extends ExplosiveProjectileEntity implement
     }
 
     public WitherScytheSkullEntity(World world, LivingEntity owner, double directionX, double directionY, double directionZ) {
-        super(EntityRegistry.WITHER_SCYTHE_SKULL, owner, directionX, directionY, directionZ, world);
+        super(LabyrinthEntities.WITHER_SCYTHE_SKULL, owner, directionX, directionY, directionZ, world);
     }
 
     protected float getDrag() {

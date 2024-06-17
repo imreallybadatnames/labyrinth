@@ -1,26 +1,30 @@
 package dev.mayaqq.labyrinth.registry.materials;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Lazy;
 
 import java.util.function.Supplier;
 
 public enum CustomMaterials implements ToolMaterial {
-    IRON(2, 200, 6.0F, 0.0F, 14, () -> {
+    IRON(BlockTags.INCORRECT_FOR_IRON_TOOL, 2, 200, 6.0F, 0.0F, 14, () -> {
         return Ingredient.ofItems(Items.IRON_INGOT);
     }),
-    DIAMOND(3, 3000, 8.0F, 0.0F, 10, () -> {
+    DIAMOND(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 3, 3000, 8.0F, 0.0F, 10, () -> {
         return Ingredient.ofItems(Items.DIAMOND);
     }),
-    GOLD(0, 100, 12.0F, 0.0F, 22, () -> {
+    GOLD(BlockTags.INCORRECT_FOR_GOLD_TOOL, 0, 100, 12.0F, 0.0F, 22, () -> {
         return Ingredient.ofItems(Items.GOLD_INGOT);
     }),
-    NETHERITE(4, 3800, 9.0F, 0.0F, 15, () -> {
+    NETHERITE(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 4, 3800, 9.0F, 0.0F, 15, () -> {
         return Ingredient.ofItems(Items.NETHERITE_INGOT);
     });
 
+    private final TagKey<Block> inverseTag;
     private final int miningLevel;
     private final int itemDurability;
     private final float miningSpeed;
@@ -28,7 +32,8 @@ public enum CustomMaterials implements ToolMaterial {
     private final int enchantability;
     private final Lazy<Ingredient> repairIngredient;
 
-    private CustomMaterials(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier repairIngredient) {
+    private CustomMaterials(TagKey<Block> inverseTag, int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier repairIngredient) {
+        this.inverseTag = inverseTag;
         this.miningLevel = miningLevel;
         this.itemDurability = itemDurability;
         this.miningSpeed = miningSpeed;
@@ -47,6 +52,11 @@ public enum CustomMaterials implements ToolMaterial {
 
     public float getAttackDamage() {
         return this.attackDamage;
+    }
+
+    @Override
+    public TagKey<Block> getInverseTag() {
+        return this.inverseTag;
     }
 
     public int getMiningLevel() {

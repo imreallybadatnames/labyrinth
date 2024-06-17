@@ -8,7 +8,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
-public class RecipeRegistry {
+public class LabyrinthRecipes {
     public static final String FORGING_ID = "forging";
     public static RecipeType<ForgeRecipe> FORGING;
     static <T extends Recipe<?>> RecipeType<T> registerRecipeType(String id) {
