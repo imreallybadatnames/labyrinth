@@ -2,6 +2,7 @@ package dev.mayaqq.labyrinth.recipes;
 
 import dev.mayaqq.labyrinth.registry.LabyrinthItems;
 import dev.mayaqq.labyrinth.registry.LabyrinthRecipes;
+import dev.mayaqq.labyrinth.utils.recipe.ForgeRecipeInput;
 import dev.mayaqq.labyrinth.utils.recipe.IngredientStack;
 import eu.pb4.polymer.core.api.item.PolymerRecipe;
 import net.minecraft.block.Block;
@@ -11,12 +12,18 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.input.RecipeInput;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-public class ForgeRecipe implements Recipe<Inventory>, PolymerRecipe {
+import java.util.List;
+
+public class ForgeRecipe implements Recipe<ForgeRecipeInput>, PolymerRecipe {
 
     protected final DefaultedList<IngredientStack> input;
     private final ItemStack result;
@@ -32,7 +39,11 @@ public class ForgeRecipe implements Recipe<Inventory>, PolymerRecipe {
 
     @Override
     public DefaultedList<Ingredient> getIngredients() {
-        return IngredientStack.listIngredients(this.input);
+        DefaultedList<Ingredient> ingredients = DefaultedList.of();
+        for (IngredientStack stack : input) {
+            ingredients.add(stack.ingredient());
+        }
+        return ingredients;
     }
 
     public DefaultedList<IngredientStack> getIngredientStacks() {
@@ -40,26 +51,13 @@ public class ForgeRecipe implements Recipe<Inventory>, PolymerRecipe {
     }
 
     @Override
-    public boolean matches(Inventory inventory, World world) {
-        for (IngredientStack ingredient : input) {
-            boolean foundMatch = false;
-            for (int slot = 0; slot < inventory.size(); slot++) {
-                ItemStack stack = inventory.getStack(slot);
-                if (ingredient.test(stack)) {
-                    foundMatch = true;
-                    break;
-                }
-            }
-            if (!foundMatch) {
-                return false;
-            }
-        }
+    public boolean matches(ForgeRecipeInput input, World world) {
         return true;
     }
 
     @Override
-    public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
-        return this.getOutput(registryManager).copy();
+    public ItemStack craft(ForgeRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
+        return getResult(lookup);
     }
 
     @Override
@@ -68,13 +66,8 @@ public class ForgeRecipe implements Recipe<Inventory>, PolymerRecipe {
     }
 
     @Override
-    public ItemStack getOutput(DynamicRegistryManager registryManager) {
-        return this.result;
-    }
-
-    @Override
-    public Identifier getId() {
-        return this.id;
+    public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
+        return result;
     }
 
     public Block getMaterial() {
@@ -85,7 +78,6 @@ public class ForgeRecipe implements Recipe<Inventory>, PolymerRecipe {
     public ItemStack createIcon() {
         return new ItemStack(LabyrinthItems.TEST_SWORD);
     }
-
 
     @Override
     public RecipeSerializer<?> getSerializer() {
