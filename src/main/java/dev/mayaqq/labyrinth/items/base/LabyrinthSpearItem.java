@@ -55,9 +55,7 @@ public class LabyrinthSpearItem extends LabyrinthSwordItem {
             int i = this.getMaxUseTime(stack) - remainingUseTicks;
             if (i >= 10) {
                 if (!world.isClient) {
-                    stack.damage(1, playerEntity, (p) -> {
-                        p.sendToolBreakStatus(user.getActiveHand());
-                    });
+                    stack.damage(1, playerEntity, EquipmentSlot.MAINHAND);
                     int slot = 0;
                     for (int y = 0; y < playerEntity.getInventory().size(); y++) {
                         if (playerEntity.getInventory().getStack(y) == stack) {
@@ -71,7 +69,7 @@ public class LabyrinthSpearItem extends LabyrinthSwordItem {
                     }
 
                     world.spawnEntity(spearEntity);
-                    world.playSoundFromEntity(null, spearEntity, SoundEvents.ITEM_TRIDENT_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    world.playSoundFromEntity(null, spearEntity, SoundEvents.ITEM_TRIDENT_THROW.value(), SoundCategory.PLAYERS, 1.0F, 1.0F);
                     if (!playerEntity.getAbilities().creativeMode) {
                         playerEntity.getInventory().removeOne(stack);
                     }

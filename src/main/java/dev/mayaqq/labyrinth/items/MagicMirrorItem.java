@@ -1,19 +1,15 @@
 package dev.mayaqq.labyrinth.items;
 
-import dev.mayaqq.labyrinth.Labyrinth;
 import dev.mayaqq.labyrinth.extensions.ServerPlayerEntityExtension;
 import dev.mayaqq.labyrinth.items.base.LabyrinthItem;
 import dev.mayaqq.labyrinth.utils.Multithreading;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -21,7 +17,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +44,7 @@ public class MagicMirrorItem extends Item implements LabyrinthItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable("item.labyrinth.magic_mirror.tooltip").formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
         tooltip.add(Text.of(" "));
     }

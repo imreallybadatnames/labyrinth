@@ -77,7 +77,7 @@ public class ForgeGui {
             ForgeRecipe recipe = forgeRecipes.get(i);
             DefaultedList<IngredientStack> ingredients = recipe.getIngredientStacks();
             GuiElementBuilder guiElement = new GuiElementBuilder();
-            ItemStack stack = recipe.getOutput(DynamicRegistryManager.EMPTY).copy();
+            ItemStack stack = recipe.getResult(DynamicRegistryManager.EMPTY).copy();
             stack.onCraftByPlayer(world, player, stack.getCount());
             if (!stack.getEnchantments().isEmpty()) {
                 for (RegistryEntry<Enchantment> enchantment : stack.getEnchantments().getEnchantments()) {

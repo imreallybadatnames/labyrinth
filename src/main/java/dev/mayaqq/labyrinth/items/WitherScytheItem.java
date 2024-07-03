@@ -2,7 +2,6 @@ package dev.mayaqq.labyrinth.items;
 
 import dev.mayaqq.labyrinth.entities.WitherScytheSkullEntity;
 import dev.mayaqq.labyrinth.items.base.LabyrinthSwordItem;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -50,11 +49,7 @@ public class WitherScytheItem extends LabyrinthSwordItem {
         skull.updatePosition(user.getX() + vec.x, user.getY() + vec.y + 1, user.getZ() + vec.z);
         skull.setOwner(user);
         world.spawnEntity(skull);
-        if (!world.isClient) {
-            itemStack.damage(1, user, (e) -> {
-                e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-            });
-        }
+        itemStack.damage(1, user, EquipmentSlot.MAINHAND);
 
         user.incrementStat(Stats.USED.getOrCreateStat(this));
         return TypedActionResult.success(itemStack, true);

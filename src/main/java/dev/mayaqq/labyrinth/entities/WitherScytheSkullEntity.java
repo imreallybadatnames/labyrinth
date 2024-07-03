@@ -3,11 +3,13 @@ package dev.mayaqq.labyrinth.entities;
 import dev.mayaqq.labyrinth.registry.LabyrinthEntities;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -18,9 +20,11 @@ import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -33,7 +37,7 @@ public class WitherScytheSkullEntity extends ExplosiveProjectileEntity implement
     }
 
     public WitherScytheSkullEntity(World world, LivingEntity owner, double directionX, double directionY, double directionZ) {
-        super(LabyrinthEntities.WITHER_SCYTHE_SKULL, owner, directionX, directionY, directionZ, world);
+        super(LabyrinthEntities.WITHER_SCYTHE_SKULL, owner, new Vec3d(directionX, directionY, directionZ), world);
     }
 
     protected float getDrag() {
@@ -57,10 +61,11 @@ public class WitherScytheSkullEntity extends ExplosiveProjectileEntity implement
             LivingEntity livingEntity;
             if (entity2 instanceof LivingEntity) {
                 livingEntity = (LivingEntity)entity2;
-                bl = entity.damage(this.getDamageSources().playerAttack((PlayerEntity) getOwner()), 8.0F);
+                DamageSource source = this.getDamageSources().playerAttack((PlayerEntity) getOwner());
+                bl = entity.damage(source, 8.0F);
                 if (bl) {
                     if (entity.isAlive()) {
-                        this.applyDamageEffects(livingEntity, entity);
+                        EnchantmentHelper.onTargetDamaged((ServerWorld) getWorld(), entity, source);
                     } else {
                         livingEntity.heal(5.0F);
                     }
@@ -102,8 +107,8 @@ public class WitherScytheSkullEntity extends ExplosiveProjectileEntity implement
         return false;
     }
 
-    protected void initDataTracker() {
-        this.dataTracker.startTracking(CHARGED, false);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        builder.add(CHARGED, false);
     }
 
     public boolean isCharged() {

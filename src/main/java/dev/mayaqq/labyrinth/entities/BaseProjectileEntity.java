@@ -139,9 +139,9 @@ public abstract class BaseProjectileEntity extends PersistentProjectileEntity im
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(ENCHANTED, false);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(ENCHANTED, false);
     }
 
     @Override
@@ -149,10 +149,6 @@ public abstract class BaseProjectileEntity extends PersistentProjectileEntity im
         return this.projectileStack.copy();
     }
 
-    @Override
-    public boolean canUsePortals() {
-        return true;
-    }
     protected void onEntityHit(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         float f = materialToItem(material).getMaxDamage();

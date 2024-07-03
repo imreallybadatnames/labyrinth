@@ -5,6 +5,7 @@ import eu.pb4.polymer.core.api.entity.PolymerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,6 +20,9 @@ public class RidableSquidEntity extends ProjectileEntity implements PolymerEntit
         this.setOwner(owner);
         this.setRotation(owner.getYaw(), owner.getPitch());
     }
+
+    @Override
+    protected void initDataTracker(DataTracker.Builder builder) {}
 
     @Override
     public void tick() {
@@ -61,10 +65,5 @@ public class RidableSquidEntity extends ProjectileEntity implements PolymerEntit
         } else {
             return EntityType.SQUID;
         }
-    }
-
-    @Override
-    protected void initDataTracker() {
-
     }
 }

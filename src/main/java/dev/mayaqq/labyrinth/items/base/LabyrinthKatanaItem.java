@@ -1,10 +1,8 @@
 package dev.mayaqq.labyrinth.items.base;
 
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.EnderPearlItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
@@ -45,9 +43,7 @@ public class LabyrinthKatanaItem extends LabyrinthSwordItem {
             player.setVelocity(vec.x * multiplier, vec.y * multiplier, vec.z * multiplier);
             player.velocityDirty = true;
             player.velocityModified = true;
-            itemStack.damage(1, user, (e) -> {
-                e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-            });
+            itemStack.damage(1, user, EquipmentSlot.MAINHAND);
         }
 
         user.incrementStat(Stats.USED.getOrCreateStat(this));

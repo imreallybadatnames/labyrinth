@@ -30,10 +30,6 @@ public class LabyrinthItems {
     public static final BlazeBowItem BLAZE_BOW = Registry.register(Registries.ITEM, id("blaze_bow"),
             new BlazeBowItem(Items.BOW, "blaze_bow"));
 
-    // ender crown
-    public static final EnderCrownItem ENDER_CROWN = Registry.register(Registries.ITEM, id("ender_crown"),
-            new EnderCrownItem(Items.DRAGON_EGG, new Item.Settings().maxCount(1).rarity(Rarity.EPIC), "ender_crown"));
-
     // utility items
     public static final MagicMirrorItem MAGIC_MIRROR = Registry.register(Registries.ITEM, id("magic_mirror"),
             new MagicMirrorItem(Items.ENDER_EYE, new Item.Settings().maxCount(1).rarity(Rarity.RARE), "magic_mirror"));

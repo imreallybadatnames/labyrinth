@@ -2,13 +2,13 @@ package dev.mayaqq.labyrinth.items;
 
 import dev.mayaqq.labyrinth.items.base.LabyrinthItem;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
@@ -42,7 +42,7 @@ public class WizardWandItem extends Item implements LabyrinthItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable("item.labyrinth.wizard_wand.tooltip").formatted(Formatting.DARK_PURPLE).formatted(Formatting.ITALIC));
         tooltip.add(Text.translatable("item.labyrinth.wizard_wand.tooltip2").formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
         tooltip.add(Text.of(" "));
@@ -54,15 +54,11 @@ public class WizardWandItem extends Item implements LabyrinthItem {
         ServerPlayerEntity player = (ServerPlayerEntity) user;
         user.getItemCooldownManager().set(this, 120);
         Vec3d vec = player.getRotationVector();
-        FireballEntity ball = new FireballEntity(world, user, vec.x, vec.y, vec.z, 1);
+        FireballEntity ball = new FireballEntity(world, user, new Vec3d(vec.x, vec.y, vec.z), 1);
         ball.updatePosition(user.getX() + vec.x, user.getY() + vec.y + 1, user.getZ() + vec.z);
         ball.setOwner(user);
         world.spawnEntity(ball);
-        if (!world.isClient) {
-            itemStack.damage(1, user, (e) -> {
-                e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-            });
-        }
+        itemStack.damage(1, user, EquipmentSlot.MAINHAND);
 
         user.incrementStat(Stats.USED.getOrCreateStat(this));
         return TypedActionResult.success(itemStack, true);

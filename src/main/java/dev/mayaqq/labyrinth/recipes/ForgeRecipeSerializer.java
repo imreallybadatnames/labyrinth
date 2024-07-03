@@ -1,54 +1,48 @@
 package dev.mayaqq.labyrinth.recipes;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.mayaqq.labyrinth.utils.recipe.IngredientStack;
-import dev.mayaqq.labyrinth.utils.recipe.RecipeParser;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 
 public class ForgeRecipeSerializer implements RecipeSerializer<ForgeRecipe> {
+    private static final MapCodec<ForgeRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            Codec.STRING.optionalFieldOf("group", "").forGetter((recipe) -> recipe.group),
+            IngredientStack.CODEC.listOf().fieldOf("input").flatXmap(ingredientStacks -> {
+                IngredientStack[] results = ingredientStacks.stream().filter((ingredient) -> !ingredient.ingredient().isEmpty()).toArray(IngredientStack[]::new);
+                if (results.length == 0) {
+                    return DataResult.error(() -> "No ingredients for shapeless recipe");
+                } else {
+                    return DataResult.success(DefaultedList.copyOf(IngredientStack.EMPTY, results));
+                }
+            }, DataResult::success).forGetter((recipe) -> recipe.input),
+            Block.CODEC.fieldOf("material").forGetter((recipe) -> recipe.getMaterial()),
+            ItemStack.VALIDATED_CODEC.fieldOf("result").forGetter((recipe) -> recipe.getResult())
+    ).apply(instance, ForgeRecipe::new));
 
-    private ForgeRecipeSerializer() {
-    }
-
-    public static final ForgeRecipeSerializer INSTANCE = new ForgeRecipeSerializer();
-
-    public static final Identifier ID = new Identifier("labyrinth", "forging");
-    @Override
-    public ForgeRecipe read(Identifier id, JsonObject json) {
-        JsonArray input = JsonHelper.getArray(json, "input");
-        DefaultedList<IngredientStack> craftingInputs = RecipeParser.ingredientStacksFromJson(input, input.size());
-        Block material = Registries.BLOCK.get(Identifier.tryParse(JsonHelper.getString(json, "material")));
-        Item outputItem = Registries.ITEM.get(Identifier.tryParse(JsonHelper.getString(json, "result")));
-        ItemStack output = new ItemStack(outputItem, 1);
-        return new ForgeRecipe(craftingInputs, output, id, material);
-    }
-
-    @Override
-    public ForgeRecipe read(Identifier id, PacketByteBuf buf) {
-        DefaultedList<IngredientStack> ingredients = IngredientStack.decodeByteBuf(buf, buf.readShort());
-
-        ItemStack output = buf.readItemStack();
-        Block material = Registries.BLOCK.get(new Identifier(buf.readString()));
-        return new ForgeRecipe(ingredients, output, id, material);
-    }
+    public static final PacketCodec<RegistryByteBuf, ForgeRecipe> PACKET_CODEC = PacketCodec.tuple(
+            PacketCodecs.STRING, ForgeRecipe::getGroup,
+            IngredientStack.PACKET_CODEC, ForgeRecipe::getIngredientStacks,
+            B, ForgeRecipe::getMaterial,
+            ItemStack.PACKET_CODEC, ForgeRecipe::getResult,
+            ForgeRecipe::new
+    );
 
     @Override
-    public void write(PacketByteBuf buf, ForgeRecipe recipe) {
-        buf.writeShort(recipe.input.size());
-        for (IngredientStack ingredientStack : recipe.input) {
-            ingredientStack.write(buf);
-        }
-        buf.writeItemStack(recipe.getOutput(DynamicRegistryManager.EMPTY));
-        buf.writeString(Registries.BLOCK.getId(recipe.getMaterial()).toString());
+    public MapCodec<ForgeRecipe> codec() {
+        return null;
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, ForgeRecipe> packetCodec() {
+        return null;
     }
 }

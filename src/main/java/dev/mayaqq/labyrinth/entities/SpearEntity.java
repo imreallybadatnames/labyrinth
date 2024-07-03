@@ -44,7 +44,7 @@ public class SpearEntity extends PersistentProjectileEntity implements PolymerEn
     }};
 
     public SpearEntity(World world, LivingEntity owner, ItemStack stack, ToolMaterial material, int slot) {
-        super(LabyrinthEntities.SPEAR, owner, world);
+        super(LabyrinthEntities.SPEAR, owner, world, stack);
         this.spearStack = new ItemStack(materialToItem.get(material));
         this.spearStack = stack.copy();
         this.dataTracker.set(ENCHANTED, stack.hasGlint());
@@ -61,9 +61,9 @@ public class SpearEntity extends PersistentProjectileEntity implements PolymerEn
         this.slot = slot;
     }
 
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(ENCHANTED, false);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(ENCHANTED, false);
     }
 
     public void tick() {
