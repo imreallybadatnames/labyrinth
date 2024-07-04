@@ -100,7 +100,7 @@ public class ForgeRecipe implements Recipe<ForgeRecipeInput>, PolymerRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ForgeRecipeSerializer::new;
+        return new ForgeRecipeSerializer();
     }
 
     @Override
@@ -134,12 +134,12 @@ public class ForgeRecipe implements Recipe<ForgeRecipeInput>, PolymerRecipe {
 
         @Override
         public MapCodec<ForgeRecipe> codec() {
-            return null;
+            return CODEC;
         }
 
         @Override
         public PacketCodec<RegistryByteBuf, ForgeRecipe> packetCodec() {
-            return null;
+            return PACKET_CODEC;
         }
     }
 }

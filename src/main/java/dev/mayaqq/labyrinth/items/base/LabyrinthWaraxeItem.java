@@ -2,10 +2,10 @@ package dev.mayaqq.labyrinth.items.base;
 
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.minecraft.item.*;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class LabyrinthWaraxeItem extends AxeItem implements LabyrinthItem {
         return this.modelData;
     }
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable("item.labyrinth.waraxe.tooltip").formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
         tooltip.add(Text.of(" "));
     }

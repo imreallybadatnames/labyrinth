@@ -2,7 +2,6 @@ package dev.mayaqq.labyrinth.registry;
 
 import dev.mayaqq.labyrinth.Labyrinth;
 import dev.mayaqq.labyrinth.recipes.ForgeRecipe;
-import dev.mayaqq.labyrinth.recipes.ForgeRecipeSerializer;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.Registries;
@@ -21,6 +20,6 @@ public class LabyrinthRecipes {
     }
     public static void register() {
         FORGING = registerRecipeType(FORGING_ID);
-        Registry.register(Registries.RECIPE_SERIALIZER, ForgeRecipeSerializer.ID, ForgeRecipeSerializer.INSTANCE);
+        Registry.register(Registries.RECIPE_SERIALIZER, Labyrinth.id("forging"), new ForgeRecipe.ForgeRecipeSerializer());
     }
 }

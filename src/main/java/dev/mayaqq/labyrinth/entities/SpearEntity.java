@@ -20,6 +20,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.EntityHitResult;
@@ -44,7 +45,7 @@ public class SpearEntity extends PersistentProjectileEntity implements PolymerEn
     }};
 
     public SpearEntity(World world, LivingEntity owner, ItemStack stack, ToolMaterial material, int slot) {
-        super(LabyrinthEntities.SPEAR, owner, world, stack);
+        super(LabyrinthEntities.SPEAR, 0, 0, 0, world, stack, stack);
         this.spearStack = new ItemStack(materialToItem.get(material));
         this.spearStack = stack.copy();
         this.dataTracker.set(ENCHANTED, stack.hasGlint());
@@ -78,42 +79,45 @@ public class SpearEntity extends PersistentProjectileEntity implements PolymerEn
         return this.spearStack.copy();
     }
 
+    @Override
+    protected ItemStack getDefaultItemStack() {
+        return this.spearStack.copy();
+    }
+
     @Nullable
     protected EntityHitResult getEntityCollision(Vec3d currentPosition, Vec3d nextPosition) {
         return this.dealtDamage ? null : super.getEntityCollision(currentPosition, nextPosition);
     }
 
+    @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
+        ServerWorld serverWorld;
         Entity entity = entityHitResult.getEntity();
-        float f = materialToItem.get(material).getMaxDamage();
-        if (entity instanceof LivingEntity livingEntity) {
-            f += EnchantmentHelper.getAttackDamage(this.spearStack, livingEntity.getGroup());
-        }
-
+        float f = material.getAttackDamage();
         Entity entity2 = this.getOwner();
-        DamageSource damageSource = this.getDamageSources().trident(this, (entity2 == null ? this : entity2));
+        DamageSource damageSource = this.getDamageSources().trident(this, entity2 == null ? this : entity2);
+        World world = this.getWorld();
+        if (world instanceof ServerWorld) {
+            serverWorld = (ServerWorld) world;
+            f = EnchantmentHelper.getDamage(serverWorld, this.getWeaponStack(), entity, damageSource, f);
+        }
         this.dealtDamage = true;
-        SoundEvent soundEvent = SoundEvents.ITEM_TRIDENT_HIT;
         if (entity.damage(damageSource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {
                 return;
             }
-
+            world = this.getWorld();
+            if (world instanceof ServerWorld) {
+                serverWorld = (ServerWorld) world;
+                EnchantmentHelper.onTargetDamaged(serverWorld, entity, damageSource, this.getWeaponStack());
+            }
             if (entity instanceof LivingEntity) {
-                LivingEntity livingEntity2 = (LivingEntity)entity;
-                if (entity2 instanceof LivingEntity) {
-                    EnchantmentHelper.onUserDamaged(livingEntity2, entity2);
-                    EnchantmentHelper.onTargetDamaged((LivingEntity)entity2, livingEntity2);
-                }
-
-                this.onHit(livingEntity2);
+                LivingEntity livingEntity = (LivingEntity) entity;
+                this.knockback(livingEntity, damageSource);
+                this.onHit(livingEntity);
             }
         }
-
         this.setVelocity(this.getVelocity().multiply(-0.01, -0.1, -0.01));
-        float g = 1.0F;
-
-        this.playSound(soundEvent, g, 1.0F);
     }
 
     protected boolean tryPickup(PlayerEntity player) {
@@ -138,16 +142,11 @@ public class SpearEntity extends PersistentProjectileEntity implements PolymerEn
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (nbt.contains("Spear", 10)) {
-            this.spearStack = ItemStack.fromNbt(nbt.getCompound("Spear"));
-        }
-
         this.dealtDamage = nbt.getBoolean("DealtDamage");
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.put("Spear", this.spearStack.writeNbt(new NbtCompound()));
         nbt.putBoolean("DealtDamage", this.dealtDamage);
     }
 
@@ -155,7 +154,6 @@ public class SpearEntity extends PersistentProjectileEntity implements PolymerEn
         if (this.pickupType != PickupPermission.ALLOWED) {
             super.age();
         }
-
     }
 
     public boolean shouldRender(double cameraX, double cameraY, double cameraZ) {

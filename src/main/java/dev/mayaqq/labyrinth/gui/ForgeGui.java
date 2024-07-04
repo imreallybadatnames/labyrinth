@@ -90,13 +90,13 @@ public class ForgeGui {
             for (IngredientStack ingredient : ingredients) {
                 String color = "§c✗ ";
                 for (int j = 0; j < player.getInventory().size(); j++) {
-                    if (ingredient.test(player.getInventory().getStack(j))) {
+                    if (ingredient.matches(player.getInventory().getStack(j))) {
                         color = "§a✔ ";
                         break;
                     }
                 }
                 // creates a lore line for the ingredient
-                guiElement.addLoreLine(Text.of(color + ingredient.getCount() + "× " + ingredient.getIngredient().getMatchingStacks()[0].getName().getString()));
+                guiElement.addLoreLine(Text.of(color + ingredient.count() + "× " + ingredient.ingredient().getMatchingStacks()[0].getName().getString()));
             }
             // creates a callback for when you click on the recipe, checks if the player has all the ingredients and if they do, removes them and gives them the output
             guiElement.setCallback((index, clickType, actionType) -> {
@@ -104,7 +104,7 @@ public class ForgeGui {
                 // checks if the player has all the ingredients
                 for (IngredientStack ingredient : ingredients) {
                     for (int j = 0; j < player.getInventory().size(); j++) {
-                        if (ingredient.test(player.getInventory().getStack(j))) {
+                        if (ingredient.matches(player.getInventory().getStack(j))) {
                             hasAll++;
                             break;
                         }
@@ -114,8 +114,8 @@ public class ForgeGui {
                 if (hasAll == ingredients.size()) {
                     ingredients.forEach(ingredient -> {
                         for (int j = 0; j < player.getInventory().size(); j++) {
-                            if (ingredient.test(player.getInventory().getStack(j))) {
-                                player.getInventory().removeStack(j, ingredient.getCount());
+                            if (ingredient.matches(player.getInventory().getStack(j))) {
+                                player.getInventory().removeStack(j, ingredient.count());
                                 break;
                             }
                         }

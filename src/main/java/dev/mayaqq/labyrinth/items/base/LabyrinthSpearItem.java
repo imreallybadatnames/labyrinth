@@ -1,20 +1,15 @@
 package dev.mayaqq.labyrinth.items.base;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import dev.mayaqq.labyrinth.entities.SpearEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -29,13 +24,8 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class LabyrinthSpearItem extends LabyrinthSwordItem {
-    private final Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers;
     public LabyrinthSpearItem(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Item polymerItem, Settings settings, String id) {
         super(toolMaterial, attackDamage, attackSpeed, polymerItem, settings, id);
-        ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(ATTACK_DAMAGE_MODIFIER_ID, "Tool modifier", attackDamage, EntityAttributeModifier.Operation.ADDITION));
-        builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Tool modifier", attackSpeed, EntityAttributeModifier.Operation.ADDITION));
-        this.attributeModifiers = builder.build();
     }
     @Override
     public boolean canMine(BlockState state, World world, BlockPos pos, PlayerEntity miner) {
@@ -45,14 +35,16 @@ public class LabyrinthSpearItem extends LabyrinthSwordItem {
     public UseAction getUseAction(ItemStack stack) {
         return UseAction.SPEAR;
     }
+
     @Override
-    public int getMaxUseTime(ItemStack stack) {
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 52000;
     }
+
     @Override
     public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
         if (user instanceof PlayerEntity playerEntity) {
-            int i = this.getMaxUseTime(stack) - remainingUseTicks;
+            int i = this.getMaxUseTime(stack, user) - remainingUseTicks;
             if (i >= 10) {
                 if (!world.isClient) {
                     stack.damage(1, playerEntity, EquipmentSlot.MAINHAND);
@@ -93,33 +85,26 @@ public class LabyrinthSpearItem extends LabyrinthSwordItem {
 
     @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.damage(1, attacker, (e) -> {
-            e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-        });
+        stack.damage(1, attacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
     public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
         if ((double)state.getHardness(world, pos) != 0.0) {
-            stack.damage(2, miner, (e) -> {
-                e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-            });
+            stack.damage(2, miner, EquipmentSlot.MAINHAND);
+
         }
 
         return true;
     }
 
     @Override
-    public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
-        return slot == EquipmentSlot.MAINHAND ? this.attributeModifiers : super.getAttributeModifiers(slot);
-    }
-
-    @Override
     public int getEnchantability() {
         return 1;
     }
+
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable("item.labyrinth.spear.tooltip").formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
         tooltip.add(Text.of(" "));
     }
